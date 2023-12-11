@@ -1,3 +1,5 @@
+import bd
+
 class Aluno():
     def __init__(self, matricula, nome, dataIngresso, dataPrevisaoConclusao, idUsuario):
         self.matricula = matricula
@@ -14,6 +16,23 @@ class Aluno():
             print()
         except:
             print("Error ao achar aluno")
+    
+    def atualizarAlunoIdUsuario(self):
+        # Conectando ao banco
+        conn = bd.conexao()
+        if conn == None:
+            return
+            # Comando sql 
+        sql = "UPDATE Alunos SET Usuarios_idUsuario = %d WHERE matricula = %d"
+        values = (self.idUsuario, self.matricula)  
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(sql, values)
+                conn.commit()
+        except Exception as e:
+            print(f"Erro ao executar comando SQL: {e}")
+        finally:
+            conn.close()
             
     def __str__(self):
         # Pego o nome da classe e depois uma lista de chave e valores dos atributos

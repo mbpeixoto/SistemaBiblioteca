@@ -1,6 +1,6 @@
 # Comandos sql e métodos de um bibliotecario
 import livroClasse, alunoClasse, funcionarioClasse
-import bd, psycopg2
+import bd
 
 menuOpcoes = """
 1- Cadastrar empréstimo
@@ -32,8 +32,16 @@ def cadastrarEmprestimo():
                 if conn == None:
                     return
                 # sql que adiciona um livro a tabela emprestimo pelo isbn e aluno.idUsuario
-                conn.close()
-                
+                sql = "INSERT INTO Livros_has_Usuarios (Livro_ISBN, Usuarios_idUsuario) VALUES (%s, %s, %s)"
+                values = (isbn, aluno.idUsuario)  
+                try:
+                    with conn.cursor() as cursor:
+                        cursor.execute(sql, values)
+                        conn.commit()
+                except Exception as e:
+                    print(f"Erro ao executar comando SQL: {e}")
+                finally:
+                    conn.close()
                 livro.qtdCopias -= 1
                 livro.atualizarLivro()
                 
@@ -46,7 +54,16 @@ def cadastrarEmprestimo():
                     if conn == None:
                         return
                     # sql que adiciona um livro a tabela emprestimo pelo isbn e aluno.idUsuario
-                    conn.close()
+                    sql = "INSERT INTO Livros_has_Usuarios (Livro_ISBN, Usuarios_idUsuario) VALUES (%s, %s, %s)"
+                    values = (isbn, funcionario.idUsuario)  
+                    try:
+                        with conn.cursor() as cursor:
+                            cursor.execute(sql, values)
+                            conn.commit()
+                    except Exception as e:
+                        print(f"Erro ao executar comando SQL: {e}")
+                    finally:
+                        conn.close()
                     
                     livro.qtdCopias -= 1
                     livro.atualizarLivro()

@@ -1,4 +1,4 @@
-import bd, psycopg2
+import bd
 
 class Autor:
     def __init__(self, nome, cpf, nacionalidade):
@@ -14,13 +14,45 @@ class Autor:
             if conn == None:
                 return
             
-            # Comando sql que pega as informacoes do autor (nome, cpf, nacionalidade)
-            # pelo nome
-            conn.close()
-            # return cls(nome, cpf, nacionalidade) 
+            # Comando sql que pega as informacoes do livro (titulo, ano, editora, qtdCopias, categoria) 
+            sql = "SELECT cpf, nacionalidade FROM Autores WHERE nome = %s"
+            values = (nome,)
+            try:  
+                with conn.cursor() as cursor:
+                    cursor.execute(sql, values)
+                    resultado = cursor.fetchone()
+                    conn.commit()
+            except Exception as e:
+                    print(f"Erro ao executar comando SQL: {e}")
+            finally:
+                conn.close()
+                
+            return cls(nome, resultado[0], resultado[1]) 
         except:
             print("Autor não encontrado na biblioteca!")
-               
+     
+    @staticmethod
+    def retornaIdAutor(nome):
+        # Conectando ao banco
+            conn = bd.conexao()
+            if conn == None:
+                return
+            
+            # Comando sql que pega as informacoes do livro (titulo, ano, editora, qtdCopias, categoria) 
+            sql = "SELECT idAutores FROM Autores WHERE nome = %s"
+            values = (nome,)
+            try:  
+                with conn.cursor() as cursor:
+                    cursor.execute(sql, values)
+                    resultado = cursor.fetchone()
+                    conn.commit()
+            except Exception as e:
+                    print(f"Erro ao executar comando SQL: {e}")
+            finally:
+                conn.close()
+                
+            return resultado[0]
+                  
     @staticmethod    
     def retornaTodosAutores():
         try:
@@ -33,26 +65,36 @@ class Autor:
             print("Error ao buscar autores")
     
     def cadastrarAutor(self):
+        conn = bd.conexao()
+        if conn == None:
+            return
+        
+        # Comando sql que cadastra autor
+        sql = "INSERT INTO Autores (nome, cpf, nacionalidade) VALUES (%s, %s, %s)"
+        values = (self.nome, self.cpf, self.nacionalidade)  
         try:
-            conn = bd.conexao()
-            if conn == None:
-                return
-            # Comando sql que cadastra autor
+            with conn.cursor() as cursor:
+                cursor.execute(sql, values)
+                conn.commit()
+                
+        except Exception as e:
+            print(f"Erro ao executar comando SQL: {e}")
+        finally:
             conn.close()
-        except:
-            print("Erro ao cadastrar livro")
-        else:
-            print("Livro cadastrado com sucesso")
             
     def atualizarAutor(self, nomeAntigo):
+        # Conectando ao banco
+        conn = bd.conexao()
+        if conn == None:
+            return
+        # Comando sql que busca pelo "nomeantigo" e atualiza as informações do autor
+        sql = "UPDATE Autores SET nome = %s, cpf = %s, nacionalidade = %s WHERE nome = %s"
+        values = (self.nome, self.cpf, self.nacionalidade, nomeAntigo)  
         try:
-            # Conectando ao banco
-            conn = bd.conexao()
-            if conn == None:
-                return
-            # Comando sql que pelo nomeAntigo atualiza as demais 
-            # informacoes (self.nome, self.cpf e self.nacionalidade)
-            
+            with conn.cursor() as cursor:
+                cursor.execute(sql, values)
+                conn.commit()
+        except Exception as e:
+            print(f"Erro ao executar comando SQL: {e}")
+        finally:
             conn.close()
-        except:
-            print("Erro ao atualizar autor")

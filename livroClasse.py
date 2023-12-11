@@ -1,4 +1,5 @@
-import bd, psycopg2
+import bd
+import autorClasse
 
 class Livro():
     def __init__(self, isbn, titulo, ano, editora, qtdCopias, categoria):
@@ -15,12 +16,39 @@ class Livro():
             if conn == None:
                 return
             # Comando sql que cadastra livro
-            conn.close()
+            sql = "INSERT INTO Livros (titulo, ano, editora, qtdCopias, categoria) VALUES (%s, %d, %s, %d, %s)"
+            values = (self.titulo, self.ano, self.editora, self.qtdCopias, self.categoria)  
+            try:
+                with conn.cursor() as cursor:
+                    cursor.execute(sql, values)
+                    conn.commit()
+            except Exception as e:
+                    print(f"Erro ao executar comando SQL: {e}")
+            finally:
+                conn.close()
         except:
             print("Erro ao cadastrar livro")
         else:
             print("Livro cadastrado com sucesso")
     
+    def vincularLivroAutores(self, autores):
+        conn = bd.conexao()
+        if conn == None:
+            return
+        for autor in autores:
+            idAutor = autorClasse.retornaIdAutor(autor)
+            
+            sql = "INSERT INTO Livros_has_Autores (Livros_ISBN, Autores_idAutores) VALUES (%d, %s)"
+            values = (self.isbn, idAutor)
+            try:
+                with conn.cursor() as cursor:
+                    cursor.execute(sql, values)
+                    conn.commit()
+            except Exception as e:
+                print(f"Erro ao executar comando SQL: {e}")
+            finally:
+                conn.close()
+        
     @classmethod
     def retornarLivro(cls, isbn):
         try:
@@ -29,10 +57,21 @@ class Livro():
             if conn == None:
                 return
             
-            # Comando sql que pega as informacoes do livro (titulo, ano, editora, qtdCopias, categoria)
-            
-            conn.close()
-            # return cls(isbn) 
+            # Comando sql que pega as informacoes do livro (titulo, ano, editora, qtdCopias, categoria) 
+            sql = "SELECT titulo, ano, editora, qtdCopias, categoria FROM Livros SET WHERE ISBN = %d"
+            values = (isbn,)
+            try:  
+                with conn.cursor() as cursor:
+                    cursor.execute(sql, values)
+                    resultado = cursor.fetchone()
+                    conn.commit()
+            except Exception as e:
+                    print(f"Erro ao executar comando SQL: {e}")
+            finally:
+                conn.close()
+                
+            return cls(isbn, resultado[0], int(resultado[1]), resultado[2], int(resultado[3]), resultado[4])
+        
         except:
             print("Livro não encontrado na biblioteca!")
             
@@ -61,7 +100,16 @@ class Livro():
             if conn == None:
                 return
             # Comando sql que busca pelo "self.isbn" e atualiza as demais informações (titulo, ano, editora, qtdCopias, categoria)
-            conn.close()
+            sql = "UPDATE Livros SET titulo = %s, ano = %d, editora = %s, qtdCopias = %d, categoria = %s WHERE ISBN = %d"
+            values = (self.titulo, self.ano, self.editora, self.qtdCopias, self.categoria, self.isbn)  
+            try:
+                with conn.cursor() as cursor:
+                    cursor.execute(sql, values)
+                    conn.commit()
+            except Exception as e:
+                    print(f"Erro ao executar comando SQL: {e}")
+            finally:
+                conn.close()
         except:
             print("Erro ao atualizar livro")
     
