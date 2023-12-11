@@ -33,15 +33,32 @@ def consultarAutores():
         
 def consultarEmprestimos():
     
-    # Conectando ao banco
+    try:
+        # Conectando ao banco
         conn = bd.conexao()
-        if conn == None:
+        if conn is None:
             return
-        # sql que remove um livro da tabela emprestimo pelo isbn e aluno.idUsuario
+        
+        # Comando SQL para consultar os empréstimos
+        sql = "SELECT * FROM Livros_has_Usuarios"
+        
+        with conn.cursor() as cursor:
+            cursor.execute(sql)
+            emprestimos = cursor.fetchall()
+            
+            if emprestimos:
+                # Exibindo os resultados (ajuste conforme sua necessidade)
+                for emprestimo in emprestimos:
+                    print(emprestimo)
+            else:
+                print("Nenhum empréstimo encontrado.")
+    
+    except Exception as e:
+        print(f"Erro ao consultar empréstimos: {e}")
+    finally:
         conn.close()
     
-def consultarReservas():
+#def consultarReservas():
     print()
     
-def realizarReserva():
-    print()
+#def realizarReserva(): print()
