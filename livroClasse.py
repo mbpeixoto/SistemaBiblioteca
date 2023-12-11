@@ -45,14 +45,31 @@ class Livro():
             if conn == None:
                 return
             # Comando usql que retorna informacoes de todos livros e o nome do autor.
-            print()
+            sql = """
+                SELECT Livros.isbn, Livros.titulo, Livros.ano, Livros.editora, Livros.qtdCopias, Livros.categoria, GROUP_CONCAT(Autores.nome) as autores
+                FROM Livros
+                LEFT JOIN Livro_has_Autores ON Livros.isbn = Livro_has_Autores.Livros_ISBN
+                LEFT JOIN Autores ON Livro_has_Autores.Autores_IdAutores = Autores.idAutores
+                GROUP BY Livros.isbn
+            """
+            
             # Guarde cada resultado e seu autor em uma lista de tuplas (livro, autores) chamada "resultados".
             # Sendo livro um objeto do da classe Livro e autores uma lista dos nomes.
-            
+            with conn.cursor() as cursor:
+                cursor.execute(sql)
+                resultados = []
+
+                for row in cursor.fetchall():
+                    isbn, titulo, ano, editora, qtdCopias, categoria, autores = row
+                    livro = cls(isbn, titulo, ano, editora, qtdCopias, categoria)
+                    resultados.append((livro, autores.split(',')))
+
+                return resultados
+        except Exception as e:
+            print(f"Erro ao buscar livros: {e}")
+        finally:
             conn.close()
             # retorne "resultados" que é a (lista de tuplas)
-        except:
-            print("Error ao buscar livros")
                 
     def atualizarLivro(self):
         try:

@@ -15,14 +15,14 @@ class Funcionario():
                 return None
             
             # Comando SQL para recuperar as informações do funcionário pela matrícula
-            sql = "SELECT matricula, cargo, idUsuario FROM funcionario WHERE matricula = %s"
+            sql = "SELECT cargo, Usuarios_idUsuarios FROM funcionario WHERE matriculaFuncionario = %s"
             
             with conn.cursor() as cursor:
                 cursor.execute(sql, (matricula,))
                 resultado = cursor.fetchone()
                 
                 if resultado:
-                    matricula, cargo, idUsuario = resultado
+                    cargo, idUsuario = resultado[0], resultado[1]
                     return cls(matricula, cargo, idUsuario)
                 else:
                     return None
