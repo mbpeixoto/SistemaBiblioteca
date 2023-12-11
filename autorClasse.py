@@ -76,7 +76,7 @@ class Autor:
 
                 for row in cursor.fetchall():
                     idAutor, nome, cpf, nacionalidade, livros = row
-                    autor = cls(idAutor, nome, cpf, nacionalidade)
+                    autor = Autor(idAutor, nome, cpf, nacionalidade)
                     livros = livros.split(',') if livros else []
                     autores.append((autor, livros))
                 # return autores

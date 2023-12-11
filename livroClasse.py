@@ -16,8 +16,8 @@ class Livro():
             if conn == None:
                 return
             # Comando sql que cadastra livro
-            sql = "INSERT INTO Livros (titulo, ano, editora, qtdCopias, categoria) VALUES (%s, %d, %s, %d, %s)"
-            values = (self.titulo, self.ano, self.editora, self.qtdCopias, self.categoria)  
+            sql = "INSERT INTO Livros (isbn, titulo, ano, editora, qtdCopias, categoria) VALUES (%d, %s, %d, %s, %d, %s)"
+            values = (self.isbn, self.titulo, self.ano, self.editora, self.qtdCopias, self.categoria)  
             try:
                 with conn.cursor() as cursor:
                     cursor.execute(sql, values)
@@ -100,7 +100,7 @@ class Livro():
 
                 for row in cursor.fetchall():
                     isbn, titulo, ano, editora, qtdCopias, categoria, autores = row
-                    livro = cls(isbn, titulo, ano, editora, qtdCopias, categoria)
+                    livro = Livro(isbn, titulo, ano, editora, qtdCopias, categoria)
                     resultados.append((livro, autores.split(',')))
 
                 return resultados

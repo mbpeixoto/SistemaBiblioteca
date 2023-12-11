@@ -13,7 +13,7 @@ Devo fazer as devidas checagem, exemplo  se tiver cadastrando um administrador n
 – Cadastrar, atualizar e remover empréstimos. (Livro.qtd + tabela emprestimos)
 """
 import livroClasse,autorClasse, usuarioClasse, alunoClasse, funcionarioClasse
-import bd, psycopg2
+import bd
 
 
 menuOpcoes = """
@@ -55,7 +55,7 @@ def cadastrarLivro():
     Digite (separado por espaço) as seguintes informações do livro:
     ISNB, título, ano, editora, qtdCopias e categoria: 
     """).split()
-    isbn, ano, qtdCopias = int(isbn), int(ano), int(qtdCopias)
+    isbn, ano, qtdCopias = isbn, int(ano), int(qtdCopias)
     livro = livroClasse.Livro(isbn, titulo, ano, editora, qtdCopias, categoria)
     
     autores = list(input("""
@@ -116,9 +116,9 @@ def cadastrarUsuario():
     2- Funcionarios
     """))
     
-    matricula = int(input("""
+    matricula = input("""
     Digite o numero da matricula: 
-    """))
+    """)
     try:    
         if opcao == 1:
             aluno = alunoClasse.Aluno.retornaAluno(matricula)
@@ -168,9 +168,9 @@ def atualizarUsuario():
     2- Funcionarios
     """))
     
-    matricula = int(input("""
+    matricula = input("""
     Digite o numero da matricula: 
-    """))
+    """)
     try:    
         if opcao == 1:
             aluno = alunoClasse.Aluno.retornaAluno(matricula)

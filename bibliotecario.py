@@ -25,7 +25,7 @@ def cadastrarEmprestimo():
             print("Para quem será realizado o empréstimo?")
             pessoa = input("Digite 'a' p/ aluno ou 'f' p/ funcionário")
             if pessoa == "a":
-                matricula = int(input("Digite a matrícula do aluno: "))
+                matricula = input("Digite a matrícula do aluno: ")
                 aluno = alunoClasse.Aluno.retornaAluno(matricula)
                 # Conectando ao banco
                 conn = bd.conexao()
@@ -46,7 +46,7 @@ def cadastrarEmprestimo():
                 livro.atualizarLivro()
                 
             elif pessoa == "f":
-                matricula = int(input("Digite a matrícula do funcionário: "))
+                matricula = input("Digite a matrícula do funcionário: ")
                 funcionario = funcionarioClasse.Funcionario.retornaFuncionario(matricula)
                 if funcionario.cargo == "professor":
                     # Conectando ao banco
@@ -93,7 +93,7 @@ def removerEmprestimo():
     pessoa = input("Digite 'a' p/ aluno ou 'f' p/ funcionário")
     
     if pessoa == "a":
-        matricula = int(input("Digite a matrícula do aluno: "))
+        matricula = input("Digite a matrícula do aluno: ")
         aluno = alunoClasse.Aluno.retornaAluno(matricula)
         
         # Conectando ao banco

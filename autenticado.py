@@ -16,10 +16,10 @@ def opcaoEscolhida(numero):
         consultarAutores()
     elif numero == 3:
         consultarEmprestimos()
-    elif numero == 4:
-        consultarReservas()
-    elif numero == 5:
-        realizarReserva()
+    #elif numero == 4:
+        #consultarReservas()
+    #elif numero == 5:
+        #realizarReserva()
 
 def consultarLivros():
     livros = livroClasse.Livro.retornarTodosLivros() 
@@ -59,6 +59,6 @@ def consultarEmprestimos():
         conn.close()
     
 #def consultarReservas():
-    print()
+    #print()
     
 #def realizarReserva(): print()

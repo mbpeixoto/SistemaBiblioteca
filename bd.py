@@ -9,8 +9,8 @@ def conexao():
         print("Erro ao se conectar com o banco de dados")
         return None
 
-DB_NAME = ""
-DB_USER = ""
-DB_PASS = ""
-DB_HOST = "isabelle.db.elephantsql.com"
+DB_NAME = "ycdpxtwg"
+DB_USER = "ycdpxtwg"
+DB_PASS = "VjAau_Q0UrCPiT_5poRtMHGcJABcMa2o"
+DB_HOST = "silly.db.elephantsql.com"
 DB_PORT = "5432"
