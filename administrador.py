@@ -164,8 +164,18 @@ def cadastrarEmprestimo():
                 conn = bd.conexao()
                 if conn == None:
                     return
+
                 # sql que adiciona um livro a tabela emprestimo pelo isbn e aluno.idUsuario
-                conn.close()
+                sql = "INSERT INTO emprestimo (isbn, idUsuario, tipoUsuario) VALUES (%s, %s, %s)"
+                values = (isbn, aluno.idUsuario, 'aluno')  
+                try:
+                    with conn.cursor() as cursor:
+                        cursor.execute(sql, values)
+                        conn.commit()
+                except Exception as e:
+                    print(f"Erro ao executar comando SQL: {e}")
+                finally:
+                    conn.close()
                 
                 livro.qtdCopias -= 1
                 livro.atualizarLivro()
@@ -179,7 +189,18 @@ def cadastrarEmprestimo():
                     if conn == None:
                         return
                     # sql que adiciona um livro a tabela emprestimo pelo isbn e aluno.idUsuario
-                    conn.close()
+                    sql = "INSERT INTO emprestimo (isbn, idUsuario, tipoUsuario) VALUES (%s, %s, %s)"
+                    values = (isbn, funcionario.idUsuario, 'funcionario')
+                    
+                    try:
+                        with conn.cursor() as cursor:
+                            cursor.execute(sql, values)
+                            conn.commit()
+                    except Exception as e:
+                        print(f"Erro ao executar comando SQL: {e}")
+                    finally:
+                        conn.close()
+                    
                     
                     livro.qtdCopias -= 1
                     livro.atualizarLivro()
@@ -213,7 +234,17 @@ def removerEmprestimo():
         if conn == None:
             return
         # sql que remove um livro da tabela emprestimo pelo isbn e aluno.idUsuario
-        conn.close()
+        sql = "DELETE FROM emprestimo WHERE isbn = %s AND idUsuario = %s AND tipoUsuario = %s"
+        values = (isbn, aluno.idUsuario, 'aluno')
+            
+        try:
+            with conn.cursor() as cursor:
+                    cursor.execute(sql, values)
+                    conn.commit()
+        except Exception as e:
+                print(f"Erro ao executar comando SQL: {e}")
+        finally:
+            conn.close()
                 
         livro.qtdCopias += 1
         livro.atualizarLivro()
@@ -227,7 +258,17 @@ def removerEmprestimo():
         if conn == None:
             return
         # sql que remove um livro da tabela emprestimo pelo isbn e funcionario.idUsuario
-        conn.close()
+        sql = "DELETE FROM emprestimo WHERE isbn = %s AND idUsuario = %s AND tipoUsuario = %s"
+        values = (isbn, funcionario.idUsuario, 'funcionario')
+            
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(sql, values)
+                conn.commit()
+        except Exception as e:
+            print(f"Erro ao executar comando SQL: {e}")
+        finally:
+            conn.close()
         
         livro.qtdCopias += 1
         livro.atualizarLivro()

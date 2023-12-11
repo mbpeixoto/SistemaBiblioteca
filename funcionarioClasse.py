@@ -9,11 +9,27 @@ class Funcionario():
     @classmethod
     def retornaFuncionario(cls, matricula):
         try:
-            # Comando sql que recupera as informacoes do funcionario pela matricula
-            # return cls(matricula, cargo, idUsuario)
-            print()
-        except:
-            print("Error ao achar aluno")
+            # Conectando ao banco
+            conn = bd.conexao()
+            if conn is None:
+                return None
+            
+            # Comando SQL para recuperar as informações do funcionário pela matrícula
+            sql = "SELECT matricula, cargo, idUsuario FROM funcionario WHERE matricula = %s"
+            
+            with conn.cursor() as cursor:
+                cursor.execute(sql, (matricula,))
+                resultado = cursor.fetchone()
+                
+                if resultado:
+                    matricula, cargo, idUsuario = resultado
+                    return cls(matricula, cargo, idUsuario)
+                else:
+                    return None
+        except Exception as e:
+            print(f"Erro ao recuperar funcionário: {e}")
+        finally:
+            conn.close()
             
     def __str__(self):
         # Pego o nome da classe e depois uma lista de chave e valores dos atributos
