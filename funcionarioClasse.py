@@ -6,6 +6,28 @@ class Funcionario():
         self.cargo = cargo
         self.idUsuario = idUsuario
     
+    def atualizarFuncionarioIdUsuario(self):
+        try:
+            # Conectando ao banco
+            conn = bd.conexao()
+            if conn is None:
+                return
+
+            with conn.cursor() as cursor:
+                sql_atualizar_aluno = "UPDATE Funcionarios SET Usuarios_idUsuario = %s WHERE matriculaFuncionario = %s"
+                cursor.execute(sql_atualizar_aluno, (self.idUsuario, self.matricula))
+
+            # Confirmar a transação
+            conn.commit()
+
+            print("Funcionário adicionado ao sistema da biblioteca!")
+
+        except Exception as e:
+            print(f"Erro ao adicionar funcionário ao sistema da biblioteca: {e}")
+        finally:
+            # Fechar a conexão
+            conn.close()
+            
     @classmethod
     def retornaFuncionario(cls, matricula):
         try:
@@ -15,7 +37,7 @@ class Funcionario():
                 return None
             
             # Comando SQL para recuperar as informações do funcionário pela matrícula
-            sql = "SELECT cargo, Usuarios_idUsuarios FROM funcionario WHERE matriculaFuncionario = %s"
+            sql = "SELECT cargo, Usuarios_idUsuario FROM funcionarios WHERE matriculaFuncionario = %s"
             
             with conn.cursor() as cursor:
                 cursor.execute(sql, (matricula,))

@@ -46,12 +46,11 @@ class Autor:
                     cursor.execute(sql, values)
                     resultado = cursor.fetchone()
                     conn.commit()
+                    return resultado[0]
             except Exception as e:
                     print(f"Erro ao executar comando SQL: {e}")
             finally:
                 conn.close()
-                
-            return resultado[0]
                   
     @staticmethod    
     def retornaTodosAutores():
@@ -62,11 +61,11 @@ class Autor:
                 return None
             # Comando usql que retorna informacoes de todos autores e os nomes de seus livros.
             sql = """
-                SELECT Autores.idAutores, Autores.nome, Autores.cpf, Autores.nacionalidade, GROUP_CONCAT(Livros.titulo) as livros
+                SELECT Autores.idAutores, Autores.nome, Autores.cpf, Autores.nacionalidade, Livros.titulo
                 FROM Autores
-                LEFT JOIN Livros_has_Autores ON Autores.idAutores = LivrosHasAutores.Autores_IdAutores
-                LEFT JOIN Livros ON Livros_has_Autores.Livros_ISBN = Livros.ISBN
-                GROUP BY Autores.idAutores
+                JOIN Livros_has_Autores ON Autores.idAutores = Livros_has_Autores.Autores_IdAutores
+                JOIN Livros ON Livros_has_Autores.Livros_ISBN = Livros.ISBN
+                GROUP BY Autores.idAutores, Livros.titulo
             """
 
             # Guarde cada autor em uma lista de objetos do tipo Autor e retorne essa lista (autores[])
@@ -76,7 +75,7 @@ class Autor:
 
                 for row in cursor.fetchall():
                     idAutor, nome, cpf, nacionalidade, livros = row
-                    autor = Autor(idAutor, nome, cpf, nacionalidade)
+                    autor = Autor(nome, cpf, nacionalidade)
                     livros = livros.split(',') if livros else []
                     autores.append((autor, livros))
                 # return autores
@@ -121,3 +120,7 @@ class Autor:
             print(f"Erro ao executar comando SQL: {e}")
         finally:
             conn.close()
+    
+    def __str__(self):
+        # Pego o nome da classe e depois uma lista de chave e valores dos atributos
+        return f"{self.__class__.__name__}: {', '.join([f'{chave}={valor}' for chave, valor in self.__dict__.items()])}"

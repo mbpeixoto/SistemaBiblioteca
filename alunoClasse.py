@@ -8,6 +8,28 @@ class Aluno():
         self.dataPrevisaoConclusao = dataPrevisaoConclusao
         self.idUsuario = idUsuario
     
+    def atualizarAlunoIdUsuario(self):
+        try:
+            # Conectando ao banco
+            conn = bd.conexao()
+            if conn is None:
+                return
+
+            with conn.cursor() as cursor:
+                sql_atualizar_aluno = "UPDATE Alunos SET Usuarios_idUsuario = %s WHERE matriculaAluno = %s"
+                cursor.execute(sql_atualizar_aluno, (self.idUsuario, self.matricula))
+
+            # Confirmar a transação
+            conn.commit()
+
+            print("Aluno adicionado ao sistema da biblioteca!")
+
+        except Exception as e:
+            print(f"Erro ao cadastrar usuário: {e}")
+        finally:
+            # Fechar a conexão
+            conn.close()
+        
     @classmethod
     def retornaAluno(cls, matricula):
         try:
@@ -17,7 +39,7 @@ class Aluno():
                 return None
             
             # Comando SQL para recuperar as informações do aluno pela matrícula
-            sql = "SELECT nome, dataIngresso, dataPrevisaoConclusao, Usuarios_idUsuarios, Cursos_idCurso FROM aluno WHERE matriculaAluno = %s"
+            sql = "SELECT nome, dataIngresso, dataPrevisaoConclusao, Usuarios_idUsuario, Curso_idCurso FROM Alunos WHERE matriculaAluno = %s"
             
             with conn.cursor() as cursor:
                 cursor.execute(sql, (matricula,))
@@ -25,11 +47,11 @@ class Aluno():
                 
                 if resultado:
                     nome, dataIngresso, dataPrevisaoConclusao, idUsuario, curso = resultado[0], resultado[1], resultado[2], resultado[3], resultado[4]
-                    return cls(matricula, nome, dataIngresso, dataPrevisaoConclusao, idUsuario, curso)
+                    return (cls(matricula, nome, dataIngresso, dataPrevisaoConclusao, idUsuario),curso)
                 else:
                     return None             
         except Exception as e:
-            print(f"Erro ao recuperar aluno: {e}")
+            print(f"Erro ao achar aluno: {e}")
         finally:
             conn.close()
             

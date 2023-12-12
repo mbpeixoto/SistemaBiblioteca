@@ -11,34 +11,28 @@ class Livro():
         self.categoria = categoria
     
     def cadastrarLivro(self):
-        try:
-            conn = bd.conexao()
-            if conn == None:
-                return
-            # Comando sql que cadastra livro
-            sql = "INSERT INTO Livros (isbn, titulo, ano, editora, qtdCopias, categoria) VALUES (%d, %s, %d, %s, %d, %s)"
-            values = (self.isbn, self.titulo, self.ano, self.editora, self.qtdCopias, self.categoria)  
-            try:
-                with conn.cursor() as cursor:
-                    cursor.execute(sql, values)
-                    conn.commit()
-            except Exception as e:
-                    print(f"Erro ao executar comando SQL: {e}")
-            finally:
-                conn.close()
-        except:
-            print("Erro ao cadastrar livro")
-        else:
-            print("Livro cadastrado com sucesso")
-    
-    def vincularLivroAutores(self, autores):
         conn = bd.conexao()
         if conn == None:
             return
-        for autor in autores:
-            idAutor = autorClasse.retornaIdAutor(autor)
-            
-            sql = "INSERT INTO Livros_has_Autores (Livros_ISBN, Autores_idAutores) VALUES (%d, %s)"
+        # Comando sql que cadastra livro
+        sql = "INSERT INTO Livros (isbn, titulo, ano, editora, qtdCopias, categoria) VALUES (%s, %s, %s, %s, %s, %s)"
+        values = (self.isbn, self.titulo, self.ano, self.editora, self.qtdCopias, self.categoria)  
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(sql, values)
+                conn.commit()
+                print("Livro cadastrado com sucesso")
+        except Exception as e:
+            print(f"Erro ao executar comando SQL: {e}")
+        finally:
+            conn.close()
+    
+    def vincularLivroAutores(self, idsAutores):
+        conn = bd.conexao()
+        if conn == None:
+            return
+        for idAutor in idsAutores:
+            sql = "INSERT INTO Livros_has_Autores (Livros_ISBN, Autores_idAutores) VALUES (%s, %s)"
             values = (self.isbn, idAutor)
             try:
                 with conn.cursor() as cursor:
@@ -58,7 +52,7 @@ class Livro():
                 return
             
             # Comando sql que pega as informacoes do livro (titulo, ano, editora, qtdCopias, categoria) 
-            sql = "SELECT titulo, ano, editora, qtdCopias, categoria FROM Livros SET WHERE ISBN = %d"
+            sql = "SELECT titulo, ano, editora, qtdCopias, categoria FROM Livros SET WHERE ISBN = %s"
             values = (isbn,)
             try:  
                 with conn.cursor() as cursor:
@@ -85,11 +79,11 @@ class Livro():
                 return
             # Comando usql que retorna informacoes de todos livros e o nome do autor.
             sql = """
-                SELECT Livros.isbn, Livros.titulo, Livros.ano, Livros.editora, Livros.qtdCopias, Livros.categoria, GROUP_CONCAT(Autores.nome) as autores
+                SELECT Livros.ISBN, Livros.titulo, Livros.ano, Livros.editora, Livros.qtdCopias, Livros.categoria, Autores.nome
                 FROM Livros
-                LEFT JOIN Livro_has_Autores ON Livros.isbn = Livro_has_Autores.Livros_ISBN
-                LEFT JOIN Autores ON Livro_has_Autores.Autores_IdAutores = Autores.idAutores
-                GROUP BY Livros.isbn
+                JOIN Livros_has_Autores ON Livros.ISBN = Livros_has_Autores.Livros_ISBN
+                JOIN Autores ON Livros_has_Autores.Autores_IdAutores = Autores.idAutores
+                GROUP BY Livros.ISBN, Autores.nome
             """
             
             # Guarde cada resultado e seu autor em uma lista de tuplas (livro, autores) chamada "resultados".
@@ -117,7 +111,7 @@ class Livro():
             if conn == None:
                 return
             # Comando sql que busca pelo "self.isbn" e atualiza as demais informações (titulo, ano, editora, qtdCopias, categoria)
-            sql = "UPDATE Livros SET titulo = %s, ano = %d, editora = %s, qtdCopias = %d, categoria = %s WHERE ISBN = %d"
+            sql = "UPDATE Livros SET titulo = %s, ano = %s, editora = %s, qtdCopias = %s, categoria = %s WHERE ISBN = %s"
             values = (self.titulo, self.ano, self.editora, self.qtdCopias, self.categoria, self.isbn)  
             try:
                 with conn.cursor() as cursor:

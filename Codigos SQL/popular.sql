@@ -91,7 +91,8 @@ INSERT INTO Alunos (matriculaAluno, nome, dataIngresso, dataPrevisaoConclusao, C
     ('Matricula2', 'Aluno 2', '2020-02-01', '2025-12-31', 2, 2),
     ('Matricula3', 'Aluno 3', '2020-03-01', '2024-12-31', 1, 3),
     ('Matricula4', 'Aluno 4', '2020-04-01', '2025-12-31', 2, 4),
-    ('Matricula5', 'Aluno 5', '2020-05-01', '2024-12-31', 1, 5);
+    ('Matricula5', 'Aluno 5', '2020-05-01', '2024-12-31', 1, 5),
+    ('Matricula6', 'Aluno 6', '2020-06-01', '2024-12-31', 1, NULL);
 
 -- Inserção de Funcionarios
 INSERT INTO Funcionarios (matriculaFuncionario, cargo, Usuarios_idUsuario) VALUES
@@ -99,7 +100,8 @@ INSERT INTO Funcionarios (matriculaFuncionario, cargo, Usuarios_idUsuario) VALUE
     ('MatriculaFunc2', 'Professor', 7),
     ('MatriculaFunc3', 'Professor', 8),
     ('MatriculaFunc4', 'Bibliotecario', 9),
-    ('MatriculaFunc5', 'Gerente', 10);
+    ('MatriculaFunc5', 'Gerente', 10),
+    ('MatriculaFunc6', 'Gerente Auxiliar', NULL);
 
 -- Inserção de Professores
 INSERT INTO Professores (nome, dataContratacao, regimeTrabalho, Funcionarios_matriculaFuncionario) VALUES

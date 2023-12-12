@@ -3,11 +3,10 @@ import livroClasse, autorClasse
 import bd, psycopg2
 
 menuOpcoes = """
+0- Para sair do programa
 1- Consultar livros
 2- Consultar autores
 3- Consultar empréstimos
-4- Consultar reserva
-5- Realizar reserva
 """
 def opcaoEscolhida(numero):
     if numero == 1:
@@ -24,12 +23,12 @@ def opcaoEscolhida(numero):
 def consultarLivros():
     livros = livroClasse.Livro.retornarTodosLivros() 
     for livro in livros:
-        print(livro)
+        print(livro[0], livro[1])
 
 def consultarAutores():
     autores = autorClasse.Autor.retornaTodosAutores() 
     for autor in autores:
-        print(autor)
+        print(autor[0], autor[1])
         
 def consultarEmprestimos():
     
@@ -58,7 +57,3 @@ def consultarEmprestimos():
     finally:
         conn.close()
     
-#def consultarReservas():
-    #print()
-    
-#def realizarReserva(): print()

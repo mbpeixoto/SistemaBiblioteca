@@ -1,7 +1,7 @@
 """
 Esse será o arquivo do programa que vai conter:
 1- Interface com o usuário
-2- Irá importar os outros arquivos
+2- Irá importar os outros arquivos necessários
 """
 from pyfiglet import Figlet
 import time
@@ -23,18 +23,19 @@ except:
     print("Sistema de informações biblioteca")
 
 # login
-tipo, grupo = None
+tipo, grupo = None, None
 while(1):
     try:
         time.sleep(1)
         print("LOGIN:") 
         nickname = input("Digite nickname: ")
         senha = input("Digite a senha: ")
-        tipo, grupo = usuarioClasse.Usuario.login()
+        tipo, grupo = usuarioClasse.Usuario.login(nickname, senha)
     except:
         continue
     else:
-        break
+        if tipo != None:
+            break
 
 if tipo == "administrador":
     while(True):
@@ -60,7 +61,7 @@ if tipo == "autenticado":
             break
         autenticado.opcaoEscolhida(numOpcao)
 
-if tipo == "nao autenticado":
+if tipo == "nao-autenticado":
     while(True):
         print(naoautenticado.menuOpcoes)
         numOpcao = int(input())

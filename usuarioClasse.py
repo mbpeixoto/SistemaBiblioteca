@@ -8,14 +8,30 @@ class Usuario():
         self.grupo = grupo
     
     @staticmethod   
-    def login(cls, nicknameFornecido, senhaFornecida):
+    def login(nicknameFornecido, senhaFornecida):
         try:
-            # Dois comandos sql: 
-            # 1- para autenticar o login com base no nickname e senha fornecidos
-            senha, tipo, grupo = "Comando sql que retorna dados do usuario (nickname, senha, tipo, grupo) para o nickname fornecido"
+            # Para autenticar o login com base no nickname e senha fornecidos
+            # senha, tipo, grupo = "Comando sql que retorna"
+            conn = bd.conexao()
+            if conn == None:
+                return
+            sql = "SELECT senha, tipo, grupo FROM Usuarios WHERE nickname = %s"
+            values = (nicknameFornecido,)  
+            try:
+                with conn.cursor() as cursor:
+                    cursor.execute(sql, values)
+                    resultado = cursor.fetchone()
+                    conn.commit()
+            except Exception as e:
+                print(f"Erro ao executar comando SQL: {e}")
+            finally:
+                conn.close()
+            
             # Compara se a senha fornecida está correta
+            senha, tipo, grupo = resultado[0], resultado[1], resultado[2]
             if senha != senhaFornecida:
                 print("Credenciais inválidas")
+                return None, None
             else:
                 # 2- retornar as demais informacoes (tipo, grupo)
                 return  tipo, grupo
@@ -23,11 +39,25 @@ class Usuario():
             print("Nickname de usuário não encontrado")
     
     def cadastrarUsuario(self):
+        # Conectando ao banco
+        conn = bd.conexao()
+        if conn is None:
+            return
+        
+        # Comando SQL para cadastrar usuário
+        sql = "INSERT INTO Usuarios (nickname, senha, tipo, grupo) VALUES (%s, %s, %s, %s)"
         try:
-            # Comando sql que cadastra usuário
-            print()
-        except:
-            print("Erro ao cadastrar usuario")
+            with conn.cursor() as cursor:
+                cursor.execute(sql, (self.nickname, self.senha, self.tipo, self.grupo))
+                # Confirmar a transação
+                conn.commit()
+                print("Usuário cadastrado com sucesso!")
+                
+        except Exception as e:
+            print(f"{e}")
+        finally:
+            # Fechar a conexão
+            conn.close()
     
     @staticmethod
     def retornarIdUsuario(nickname, senha):
@@ -54,7 +84,7 @@ class Usuario():
         if conn == None:
             return
         # sql que retorna o idUsuario pela matricula
-        sql = "SELECT nickname, senha, tipo, grupo FROM Usuarios WHERE idUsuario = %d"
+        sql = "SELECT nickname, senha, tipo, grupo FROM Usuarios WHERE idUsuario = %s"
         values = (idUsuario,)
         try:
             with conn.cursor() as cursor:
@@ -73,7 +103,7 @@ class Usuario():
             if conn == None:
                 return
             # Comando sql 
-            sql = "UPDATE Usuarios SET nickname = %s, senha = %s, tipo = %s WHERE idUsuario = %d"
+            sql = "UPDATE Usuarios SET nickname = %s, senha = %s, tipo = %s WHERE idUsuario = %s"
             values = (self.nickname, self.senha, self.tipo, idUsuario)  
             try:
                 with conn.cursor() as cursor:
